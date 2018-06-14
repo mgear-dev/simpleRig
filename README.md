@@ -1,0 +1,2 @@
+# simpleRig
+Simple Rigging system
