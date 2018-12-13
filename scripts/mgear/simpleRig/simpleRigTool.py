@@ -1412,6 +1412,12 @@ class simpleRigUI(QtWidgets.QMainWindow, srUI.Ui_MainWindow):
     def __init__(self, parent=None):
         super(simpleRigUI, self).__init__(parent)
         self.setupUi(self)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+        self.installEventFilter(self)
+
+    def keyPressEvent(self, event):
+        if not event.key() == QtCore.Qt.Key_Escape:
+            super(simpleRigUI, self).keyPressEvent(event)
 
 
 class simpleRigTool(MayaQWidgetDockableMixin, QtWidgets.QDialog):
@@ -1428,6 +1434,11 @@ class simpleRigTool(MayaQWidgetDockableMixin, QtWidgets.QDialog):
         self.create_connections()
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+        self.installEventFilter(self)
+
+    def keyPressEvent(self, event):
+        if not event.key() == QtCore.Qt.Key_Escape:
+            super(simpleRigTool, self).keyPressEvent(event)
 
     def setup_simpleRigWindow(self):
 
@@ -1615,7 +1626,8 @@ class simpleRigTool(MayaQWidgetDockableMixin, QtWidgets.QDialog):
 
 
 def openSimpleRigUI(*args):
-    pyqt.showDialog(simpleRigTool)
+    pyqt.showDialog(simpleRigTool, dockable=True)
+
 ####################################
 
 
