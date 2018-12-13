@@ -309,9 +309,7 @@ def _create_simple_rig_root(rigName=RIG_ROOT,
         t = transform.getTransformFromPos(volCenter)
 
     # configure selectable geo
-    for e in selection:
-        pm.connectAttr(rig.geoUnselectable, e.attr("overrideEnabled"))
-        e.attr("overrideDisplayType").set(2)
+    connect_selectable(rig, selection)
 
     ctt = None
     # create world ctl
@@ -462,6 +460,19 @@ def _get_simple_rig_root():
     if rig_models:
         return rig_models[0]
 
+def connect_selectable(rig, selection):
+    """Configure selectable geo
+
+    Args:
+        rig (dagNode): rig root with geo Unselectable attr
+        selection (list): List of object to connect
+    """
+    # configure selectable geo
+    for e in selection:
+        pm.connectAttr(rig.geoUnselectable,
+                       e.attr("overrideEnabled"),
+                       force=True)
+        e.attr("overrideDisplayType").set(2)
 
 def _get_children(dagNode):
     """Get all children node
@@ -707,7 +718,7 @@ def _build_rig_from_configuration(configDict):
     Args:
         configDict (dict): The configuration dictionary
     """
-    _create_base_structure(configDict["root_name"])
+    rig = _create_base_structure(configDict["root_name"])
     for c in configDict["ctl_list"]:
         ctl_conf = configDict["ctl_settings"][c]
         driven = []
@@ -730,6 +741,7 @@ def _build_rig_from_configuration(configDict):
                         driven=driven,
                         sets_config=ctl_conf["sets_list"])
         curve.update_curve_from_data(ctl_conf["ctl_shapes"])
+        connect_selectable(rig, driven)
 
 
 def export_configuration(filePath=None):
