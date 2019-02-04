@@ -13,7 +13,7 @@ from pymel import versions
 from pymel.core import datatypes
 
 from mgear.core import string
-from . import simpleRigUI as srUI
+from mgear.simpleRig import simpleRigUI as srUI
 
 CTL_TAG_ATTR = "is_simple_rig_ctl"
 RIG_ROOT = "rig"
@@ -938,13 +938,18 @@ def convert_to_shifter_rig():
             pm.select(guide.model)
             rig = shifter.Rig()
             rig.buildFromSelection()
+            rig.jnt_vis.set(0)
+
+            attribute.addAttribute(rig.model, "geoUnselectable", "bool", True)
 
             # skin driven to new rig and  apply control shapes
+            driven = None
             for c in configDict["ctl_list"]:
                 ctl_conf = configDict["ctl_settings"][c]
                 for d in ctl_conf["driven_list"]:
                     driven = pm.ls(d)
                     jnt = pm.ls(c.replace("ctl", "0_jnt"))
+                    connect_selectable(rig.model, [driven[0]])
                     if driven and jnt:
                         try:
                             pm.skinCluster(jnt[0],
@@ -958,6 +963,10 @@ def convert_to_shifter_rig():
                                               " {}. Skipped.".format(d))
 
                 curve.update_curve_from_data(ctl_conf["ctl_shapes"])
+
+            # ensure geo root is child of rig root
+            if driven:
+                pm.parent(driven[0].getParent(-1), rig.model)
         else:
             pm.displayWarning("The guide can not be extracted. Check log!")
     else:
