@@ -938,7 +938,7 @@ def convert_to_shifter_rig():
             pm.select(guide.model)
             rig = shifter.Rig()
             rig.buildFromSelection()
-            rig.jnt_vis.set(0)
+            rig.model.jnt_vis.set(0)
 
             attribute.addAttribute(rig.model, "geoUnselectable", "bool", True)
 
