@@ -1,6 +1,5 @@
 import pymel.core as pm
 import mgear
-from mgear.simpleRig import simpleRigTool
 
 
 def install():
@@ -8,4 +7,10 @@ def install():
     """
     pm.setParent(mgear.menu_id, menu=True)
     pm.menuItem(divider=True)
-    pm.menuItem(label="Simple Rig Tool", command=simpleRigTool.openSimpleRigUI)
+    pm.menuItem(label="Simple Rig Tool", command=str_open_simple_rig)
+
+
+str_open_simple_rig = """
+from mgear.simpleRig import simpleRigTool
+simpleRigTool.openSimpleRigUI()
+"""
