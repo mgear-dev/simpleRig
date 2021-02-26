@@ -460,6 +460,7 @@ def _get_simple_rig_root():
     if rig_models:
         return rig_models[0]
 
+
 def connect_selectable(rig, selection):
     """Configure selectable geo
 
@@ -473,6 +474,7 @@ def connect_selectable(rig, selection):
                        e.attr("overrideEnabled"),
                        force=True)
         e.attr("overrideDisplayType").set(2)
+
 
 def _get_children(dagNode):
     """Get all children node
@@ -694,8 +696,9 @@ def _build_rig_from_model(dagNode,
     if local_ctl:
         descendents = reversed(dagNode.listRelatives(allDescendents=True,
                                                      type="transform"))
+        suff_list = suffix.split(",")
         for d in descendents:
-            if d.name().endswith(suf):
+            if list(filter(d.name().endswith, suff_list)) != []:
                 name = d.name().replace(suf, "")
                 if d.getParent().name() in parent_dict:
                     parent = parent_dict[d.getParent().name()]
